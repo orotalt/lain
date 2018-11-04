@@ -121,6 +121,37 @@ function util.add_tag(layout)
     }
 end
 
+-- Go to tag
+function util.find_tag()
+    awful.prompt.run {
+        prompt       = "Tag name: ",
+        textbox      = awful.screen.focused().mypromptbox.widget,
+        exe_callback = function(name)
+            if not name or #name == 0 then return end
+            local t = awful.tag.find_by_name(awful.screen.focused(), name)
+            if not t then return end
+
+            t:view_only()
+        end
+    }
+end
+
+function util.move_to_new_tag(layout)
+    awful.prompt.run {
+        prompt       = "Move to tag: ",
+        textbox      = awful.screen.focused().mypromptbox.widget,
+        exe_callback = function(name)
+            if not name or #name == 0 then return end
+            local c = client.focus
+            if not c then return end
+            local t = awful.tag.find_by_name({screen= c.screen }, name)
+            if not t then return end
+            c:tags({t})
+            t:view_only()
+        end
+    }
+end
+
 -- Rename current tag
 function util.rename_tag()
     awful.prompt.run {
