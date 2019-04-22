@@ -21,7 +21,7 @@ local function factory(args)
 
     function mem.update()
         mem_now = {}
-        for line in lines("/proc/meminfo") do
+        for line in lines("/compat/linux/proc/meminfo") do
             for k, v in gmatch(line, "([%a]+):[%s]+([%d]+).+") do
                 if     k == "MemTotal"     then mem_now.total = floor(v / 1024 + 0.5)
                 elseif k == "MemFree"      then mem_now.free  = floor(v / 1024 + 0.5)
@@ -29,12 +29,11 @@ local function factory(args)
                 elseif k == "Cached"       then mem_now.cache = floor(v / 1024 + 0.5)
                 elseif k == "SwapTotal"    then mem_now.swap  = floor(v / 1024 + 0.5)
                 elseif k == "SwapFree"     then mem_now.swapf = floor(v / 1024 + 0.5)
-                elseif k == "SReclaimable" then mem_now.srec  = floor(v / 1024 + 0.5)
                 end
             end
         end
 
-        mem_now.used = mem_now.total - mem_now.free - mem_now.buf - mem_now.cache - mem_now.srec
+        mem_now.used = mem_now.total - mem_now.free - mem_now.buf - mem_now.cache
         mem_now.swapused = mem_now.swap - mem_now.swapf
         mem_now.perc = math.floor(mem_now.used / mem_now.total * 100)
 

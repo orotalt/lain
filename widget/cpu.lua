@@ -25,7 +25,7 @@ local function factory(args)
         -- Read the amount of time the CPUs have spent performing
         -- different kinds of work. Read the first line of /proc/stat
         -- which is the sum of all CPUs.
-        local times = helpers.lines_match("cpu","/proc/stat")
+        local times = helpers.lines_match("cpu","/compat/linux/proc/stat")
 
         for index,time in pairs(times) do
             local coreid = index - 1

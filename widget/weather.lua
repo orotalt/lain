@@ -64,12 +64,12 @@ local function factory(args)
             weather.forecast_update()
         end
 
-        weather.notification = naughty.notify {
-            preset  = notification_preset,
-            text    = weather.notification_text,
-            icon    = weather.icon_path,
-            timeout = type(seconds == "number") and seconds or notification_preset.timeout
-        }
+--        weather.notification = naughty.notify {
+--            preset  = notification_preset,
+--            text    = weather.notification_text,
+--            icon    = weather.icon_path,
+--            timeout = type(seconds == "number") and seconds or notification_preset.timeout
+--        }
     end
 
     function weather.hide()
