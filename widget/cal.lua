@@ -52,7 +52,7 @@ local function factory(args)
         local d = os.date("*t", t)
         local mth_days, st_day, this_month = d.day, (d.wday-d.day-cal.week_start+1)%7, os.date("%B %Y", t)
         local notifytable = { [1] = string.format("%s%s\n", string.rep(" ", floor((28 - this_month:len())/2)), markup.bold(this_month)) }
-        for x = 0,6 do notifytable[#notifytable+1] = os.date("%a ", os.time { year=2006, month=1, day=x+cal.week_start }) end
+        for x = 0,6 do notifytable[#notifytable+1] = os.date("%a", os.time { year=2006, month=1, day=x+cal.week_start }):sub(1, 3) .. " " end
         notifytable[#notifytable] = string.format("%s\n%s", notifytable[#notifytable]:sub(1, -2), string.rep(" ", st_day*4))
         local strx
         for x = 1,mth_days do
@@ -126,14 +126,14 @@ local function factory(args)
     end
 
     function cal.show(seconds, month, year, scr)
-        cal.notification_preset.text = tconcat(cal.build(month, year))
+        local text = tconcat(cal.build(month, year))
 
         if cal.three then
             local current_month, current_year = cal.month, cal.year
             local prev_month, prev_year = cal.getdate(cal.month, cal.year, -1)
             local next_month, next_year = cal.getdate(cal.month, cal.year,  1)
-            cal.notification_preset.text = string.format("%s\n\n%s\n\n%s",
-            tconcat(cal.build(prev_month, prev_year)), cal.notification_preset.text,
+            text = string.format("%s\n\n%s\n\n%s",
+            tconcat(cal.build(prev_month, prev_year)), text,
             tconcat(cal.build(next_month, next_year)))
             cal.month, cal.year = current_month, current_year
         end
@@ -143,7 +143,8 @@ local function factory(args)
             preset  = cal.notification_preset,
             screen  = cal.followtag and awful.screen.focused() or scr or 1,
             icon    = cal.icon,
-            timeout = type(seconds) == "number" and seconds or cal.notification_preset.timeout or 5
+            timeout = type(seconds) == "number" and seconds or cal.notification_preset.timeout or 5,
+            text    = text
         }
     end
 

@@ -15,8 +15,8 @@ local string  = string
 -- lain.widget.net
 
 local function factory(args)
-    local net        = { widget = wibox.widget.textbox(), devices = {} }
     local args       = args or {}
+    local net        = { widget = args.widget or wibox.widget.textbox(), devices = {} }
     local timeout    = args.timeout or 2
     local units      = args.units or 1024 -- KB
     local notify     = args.notify or "on"
@@ -29,13 +29,14 @@ local function factory(args)
     net.iface = (args.iface and (type(args.iface) == "string" and {args.iface}) or
                 (type(args.iface) == "table" and args.iface)) or {}
 
-    function net.get_device()
+    function net.get_devices()
+        net.iface = {} -- reset at every call
         helpers.line_callback("ip link", function(line)
             net.iface[#net.iface + 1] = not string.match(line, "LOOPBACK") and string.match(line, "(%w+): <") or nil
         end)
     end
 
-    if #net.iface == 0 then net.get_device() end
+    if #net.iface == 0 then net.get_devices() end
 
     function net.update()
         -- These are the totals over all specified interfaces
